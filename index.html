@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ABS Jewelry</title>
+  <style>
+    :root {
+      --main-bg: #4b4b4b;
+      --text-light: #fff;
+      --text-dark: #000;
+      --accent: #4b4b4b;
+    }
+
+      @media (max-width: 768px) {
+        header {
+          flex-direction: column;
+          align-items: center;
+          text-align: center;
+        }
+
+        .brand-title {
+          position: static;
+          transform: none;
+          margin: 10px 0;
+        }
+
+        nav {
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: center;
+          gap: 10px;
+          margin-top: 10px;
+        }
+
+        nav a {
+          font-size: 14px;
+        }
+
+        .logo {
+          height: 70px;
+        }
+      }
+
+      .brand-title {
+        color: white;
+        font-size: 24px;
+        font-family: 'Segoe UI', sans-serif;
+        margin: 0 auto;
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+      }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: white;
+      color: var(--text-dark);
+    }
+
+    header {
+      background-color: var(--main-bg);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 20px;
+      position: sticky;
+      top: 0;
+      z-index: 999;
+      flex-wrap: wrap;
+    }
+
+      .logo {
+        height: auto;
+        max-height: 80px;
+        width: auto;
+        max-width: 160px;
+      }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      margin-left: 20px;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    nav a:hover {
+      text-decoration: underline;
+    }
+      .hero {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 100px 20px;
+        background-color: var(--accent);
+        color: white;
+        text-align: center;
+      }
+
+      .hero h2 {
+        font-size: 2.2em;
+        font-weight: 600;
+        max-width: 600px;
+        line-height: 1.3;
+      }
+
+      .hero h2 {
+        animation: fadeIn 1.2s ease-in-out;
+      }
+
+      @keyframes fadeIn {
+        0% { opacity: 0; transform: translateY(20px); }
+        100% { opacity: 1; transform: translateY(0); }
+      }
+
+      .product-section {
+        padding: 80px 20px;
+        text-align: center;
+      }
+
+      .product-box {
+        background-color: var(--accent);
+        border-radius: 12px;
+        padding: 40px 20px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 30px;
+        justify-content: center;
+        margin-top: 20px;
+      }
+
+      .product {
+        background-color: white;
+        border-radius: 10px;
+        width: 250px;
+        padding: 20px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      }
+
+      .product img {
+        width: 100%;
+        border-radius: 8px;
+        margin-bottom: 15px;
+      }
+
+      .product h3 {
+        margin: 0;
+        font-size: 16px;
+        color: var(--text-dark);
+      }
+
+      .product p {
+        font-size: 14px;
+        color: #333;
+      }
+
+      .logo-intro {
+              position: fixed;
+              inset: 0;
+              background: white;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              z-index: 9999;
+              animation: hideIntro 1.5s ease forwards 2s;
+            }
+            .logo-animated {
+              height: 150px;
+              animation: zoomToTopLeft 2s ease forwards;
+            }
+            @keyframes zoomToTopLeft {
+              0% {
+                transform: scale(1.8) translate(0, 0);
+              }
+              100% {
+                transform: scale(1) translate(-42vw, -38vh);
+              }
+            }
+            @keyframes hideIntro {
+              to {
+                opacity: 0;
+                visibility: hidden;
+              }
+            }
+
+
+      .coming-soon {
+        background-color: #f5f5f5;
+        border: 2px dashed #bbb;
+        color: #777;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 200px;
+      }
+
+      .reviews-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 20px;
+        background-color: var(--accent);
+        padding: 40px 20px;
+        border-radius: 12px;
+        margin-top: 20px;
+      }
+
+      .review-box {
+        background-color: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+        text-align: left;
+      }
+
+      .review-box strong {
+        display: block;
+        margin-bottom: 10px;
+        font-size: 15px;
+        color: var(--text-dark);
+      }
+
+      .review-box small {
+        color: #666;
+        margin-top: 10px;
+        display: block;
+        font-size: 13px;
+      }
+      .review-form {
+        background-color: white;
+        padding: 25px;
+        border-radius: 10px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      .review-form form {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .review-form input,
+      .review-form textarea,
+      .review-form select {
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        font-size: 14px;
+      }
+
+      .review-form button {
+        padding: 10px;
+        background-color: var(--main-bg);
+        color: white;
+        border: none;
+        border-radius: 5px;
+        font-weight: bold;
+        cursor: pointer;
+      }
+
+      .review-form button:hover {
+        background-color: #333;
+      }
+
+      .about-outer {
+        background-color: var(--main-bg);
+        padding: 60px 20px;
+        display: flex;
+        justify-content: center;
+      }
+
+      .about-inner {
+        background-color: white;
+        padding: 40px 30px;
+        border-radius: 12px;
+        max-width: 800px;
+        width: 100%;
+        color: #000;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        line-height: 1.6;
+      }
+
+      .contact-outer {
+        background-color: var(--main-bg);
+        padding: 60px 20px;
+        display: flex;
+        justify-content: center;
+      }
+
+      .contact-inner {
+        background-color: white;
+        padding: 40px 30px;
+        border-radius: 12px;
+        max-width: 800px; /* same as .about-inner */
+        width: 100%;
+        color: #000;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        line-height: 1.6;
+      }
+
+      .contact-inner form {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        margin-top: 20px;
+      }
+
+      .contact-inner input,
+      .contact-inner textarea {
+        padding: 12px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        font-size: 14px;
+      }
+
+      .contact-inner button:hover {
+        background-color: #333;
+      }
+
+  </style>
+</head>
+<body>
+
+    <div class="logo-intro">
+      <img src="images/logo.webp" alt="ABS Logo" class="logo-animated" />
+    </div>
+
+    <header>
+      <img src="images/logo.webp" class="logo" alt="ABS Logo" />
+      <h1 class="brand-title">ABS Jewelry</h1>
+      <nav>
+        <a href="#men">Men</a>
+        <a href="#women">Women</a>
+        <a href="#reviews">Reviews</a>
+        <a href="#about">About</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </header>
+
+    <section class="hero">
+      <h2>Your culture, always with you.</h2>
+    </section>
+
+    <section id="men" class="product-section">
+      <h2>Men’s Collection</h2>
+      <div class="product-box">
+        <div class="product">
+          <img src="images/necklace_black.png" alt="Black Enamel Necklace">
+          <h3>Palestine on Your Heart – Black</h3>
+          <p>Black enamel pendant on cuban chain. Guaranteed not to scratch.</p>
+        </div>
+        <div class="product">
+          <img src="images/necklace_silver.png" alt="Silver Necklace">
+          <h3>Palestine on Your Heart – Silver</h3>
+          <p>Full stainless steel version of our elegant pendant.</p>
+        </div>
+        <div class="product">
+          <img src="images/bracelet_black.png" alt="Black Rope Bracelet">
+          <h3>Daily Thread – Black</h3>
+          <p>Rope bracelet with black enamel map. Daily elegance, scratch resistant.</p>
+        </div>
+        <div class="product">
+          <img src="images/bracelet_silver.png" alt="Silver Rope Bracelet">
+          <h3>Daily Thread – Silver</h3>
+          <p>Minimalist silver stainless steel rope bracelet.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="women" class="product-section">
+      <h2>Women’s Collection</h2>
+      <div class="product-box">
+        <div class="product coming-soon">
+          <h3>Necklace</h3>
+          <p>Coming Soon</p>
+        </div>
+        <div class="product coming-soon">
+          <h3>Bracelet</h3>
+          <p>Coming Soon</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="reviews" class="product-section">
+      <h2>Customer Reviews</h2>
+      <div class="reviews-grid">
+          <div class="review-box review-form">
+            <h3>Leave a Review</h3>
+            <form>
+              <input type="text" placeholder="Your Name" required>
+              <input type="email" placeholder="Your Email (optional)">
+              <select required>
+                <option value="">Select a product</option>
+                <option value="necklace_black">Black Necklace</option>
+                <option value="necklace_silver">Silver Necklace</option>
+                <option value="bracelet_black">Black Bracelet</option>
+                <option value="bracelet_silver">Silver Bracelet</option>
+              </select>
+              <textarea rows="4" placeholder="Your Review" required></textarea>
+              <button type="submit">Submit Review</button>
+            </form>
+          </div>
+
+        <div class="review-box">
+          <strong>Adam T. ★★★★★</strong>
+          <p>The black necklace is incredibly detailed and feels high quality.</p>
+          <small>3 days ago</small>
+        </div>
+        <div class="review-box">
+          <strong>Bilal S. ★★★★★</strong>
+          <p>The silver rope bracelet is subtle but always gets compliments.</p>
+          <small>1 week ago</small>
+        </div>
+        <div class="review-box">
+          <strong>Yousef A. ★★★★★</strong>
+          <p>I wear the black bracelet every day — still looks brand new.</p>
+          <small>2 weeks ago</small>
+        </div>
+        <div class="review-box">
+          <strong>Kareem N. ★★★★☆</strong>
+          <p>The silver necklace is elegant — I wear it to events all the time.</p>
+          <small>5 days ago</small>
+        </div>
+        <div class="review-box">
+          <strong>Hamza F. ★★★★★</strong>
+          <p>Love how it represents Palestine without being too flashy.</p>
+          <small>1 month ago</small>
+        </div>
+        <div class="review-box">
+          <strong>Omar Z. ★★★★★</strong>
+          <p>Gifted both colors — quality is excellent. Will buy again.</p>
+          <small>2 days ago</small>
+        </div>
+        <div class="review-box">
+          <strong>Ali J. ★★★★★</strong>
+          <p>The rope bracelet is exactly what I was looking for — clean and meaningful.</p>
+          <small>4 days ago</small>
+        </div>
+      </div>
+    </section>
+
+    <section id="about" class="about-outer">
+      <div class="about-inner">
+        <h2>About ABS</h2>
+        <p>
+          ABS Jewelry was born from a simple idea: to carry a piece of home, always. As a Palestinian abroad, I often looked for subtle, elegant ways to represent my culture in my daily life — something minimalist, yet meaningful.
+        </p>
+        <p>
+          That’s when the idea of ABS came to life — handcrafted jewelry designed to symbolize heritage with elegance. Whether it’s our rope bracelets meant for daily wear, or our stainless steel necklaces that shine on special occasions, every piece is made with purpose.
+        </p>
+        <p>
+          We offer international shipping and free returns within 30 days. This isn’t just jewelry. It’s a reminder of who we are — and where we come from.
+        </p>
+      </div>
+    </section>
+
+    <section id="contact" class="contact-outer">
+      <div class="contact-inner">
+        <h2>Contact Us</h2>
+        <p>Email: <a href="mailto:abs.jwlr@gmail.com">abs.jwlr@gmail.com</a></p>
+
+        <form>
+          <input type="text" placeholder="Your Name" required />
+          <input type="email" placeholder="Your Email" required />
+          <textarea rows="4" placeholder="Your Complaint or Message" required></textarea>
+          <button type="submit">Submit</button>
+        </form>
+      </div>
+    </section>
+
+</body>
+</html>
+
