@@ -337,10 +337,18 @@ header {
 
 /* 3. Fix product image size in cart */
 .snipcart-item-line__media img {
-  width: 100px;
+  width: 110px;
   height: auto;
   border-radius: 8px;
   object-fit: cover;
+}
+    .snipcart-item-line__media {
+  align-self: flex-start;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100px; /* Matches image height */
+  padding-right: 10px;
 }
   </style>
 </head>
