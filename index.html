@@ -193,48 +193,6 @@
                 visibility: hidden;
               }
             }
-/* General logo styles */
-.logo-wrapper {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100px;
-  position: relative;
-  animation: none;
-}
-
-.logo {
-  max-width: 160px;
-  max-height: 80px;
-  width: auto;
-  height: auto;
-  z-index: 1001;
-}
-
-/* Animate logo only on phones */
-@media (max-width: 768px) {
-  .logo-wrapper {
-    position: absolute;
-    top: 40%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    animation: moveLogoToHeader 1.2s ease-out forwards;
-    z-index: 1001;
-  }
-
-  @keyframes moveLogoToHeader {
-    0% {
-      top: 40%;
-      transform: translate(-50%, -50%) scale(1.2);
-      opacity: 0;
-    }
-    100% {
-      top: 10px;
-      transform: translate(-50%, 0) scale(1);
-      opacity: 1;
-    }
-  }
-}
 
       .coming-soon {
         background-color: #f5f5f5;
@@ -432,9 +390,9 @@ header {
     </div>
 
     <header>
-      <div class="logo-wrapper">
-  <img src="images/logo.png" class="logo" />
-</div>
+      <img src="images/logo.webp" class="logo" alt="ABS Logo" />
+      <h1 class="brand-title">ABS Jewelry</h1>
+
       <nav>
         <a href="#men">Men</a>
         <a href="#women">Women</a>
