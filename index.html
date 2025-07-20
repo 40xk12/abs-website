@@ -518,12 +518,35 @@
         <h2>Contact Us</h2>
         <p>Email: <a href="mailto:abs.jwlr@gmail.com">abs.jwlr@gmail.com</a></p>
 
-        <form>
-          <input type="text" placeholder="Your Name" required />
-          <input type="email" placeholder="Your Email" required />
-          <textarea rows="4" placeholder="Your Complaint or Message" required></textarea>
-          <button type="submit">Submit</button>
-        </form>
+       <form action="https://formspree.io/f/mnnzjvap" method="POST" onsubmit="handleReviewSubmit(event)">
+  <input type="text" name="name" placeholder="Your Name" required />
+  <input type="email" name="email" placeholder="Your Email" required />
+  <textarea name="complaint" placeholder="Your Complaint or Message" required></textarea>
+  <button type="submit">Submit Review</button>
+</form>
+
+<p id="review-confirmation" style="display:none; color: green;">Thank you for your review!</p>
+
+<script>
+  function handleReviewSubmit(event) {
+    event.preventDefault();
+    const form = event.target;
+    const data = new FormData(form);
+    fetch(form.action, {
+      method: 'POST',
+      body: data,
+      headers: {
+        'Accept': 'application/json'
+      }
+    }).then(response => {
+      if (response.ok) {
+        form.reset();
+        document.getElementById('review-confirmation').style.display = 'block';
+      }
+    });
+  }
+</script>
+
       </div>
     </section>
 <script>
