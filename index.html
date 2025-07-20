@@ -318,12 +318,21 @@
       .contact-inner button:hover {
         background-color: #333;
       }
-    /* Fix Snipcart cart being hidden under sticky header */
+   /* 1. Push Snipcart content below the sticky header */
 body.snipcart-checkout,
 body.snipcart-cart--opened {
-  padding-top: 140px !important;
+  padding-top: 160px !important; /* slightly more than header height */
 }
-/* Make product images larger and cleaner inside the cart */
+
+/* 2. Make sure sticky header doesn't overlay cart */
+header {
+  z-index: 1000; /* already high */
+  position: sticky;
+  top: 0;
+  background-color: var(--main-bg);
+}
+
+/* 3. Fix product image size in cart */
 .snipcart-item-line__media img {
   width: 100px;
   height: auto;
