@@ -422,7 +422,7 @@ header {
   
 <label for="currencySelect">Currency:</label>
 <select id="currencySelect">
-  <option value="USD" selected>USD ($)</option>
+  <option value="USD">USD ($)</option>
   <option value="AED">AED (د.إ)</option>
 </select>
   
@@ -669,12 +669,12 @@ header {
     "necklace-silver": 24,
   };
 
-  document.getElementById("currencySelect").addEventListener("change", () => {
-    const selectedCurrency = document.getElementById("currencySelect").value;
+  // Function to update UI based on selected currency
+  function updateCurrency(selectedCurrency) {
     const rate = currencyRates[selectedCurrency];
     const symbol = currencySymbols[selectedCurrency];
 
-    // Update product buttons visually and in attributes
+    // Update all product buttons
     document.querySelectorAll(".snipcart-add-item").forEach(button => {
       const id = button.getAttribute("data-item-id");
       const base = basePrices[id];
@@ -692,10 +692,10 @@ header {
       }
     });
 
-    // Update Snipcart currency session
+    // Update Snipcart session
     Snipcart.api.session.setCurrency(selectedCurrency);
 
-    // Optional: fix currency symbol lag in cart UI
+    // Fix cart UI symbols (optional but recommended)
     setTimeout(() => {
       const priceElements = document.querySelectorAll(
         ".snipcart-item-line__price, .snipcart-summary-fees__amount, .snipcart-total__amount, .snipcart-base-button-primary__amount"
@@ -705,6 +705,20 @@ header {
         el.textContent = el.textContent.replace(/^\D*/, symbol + " ");
       });
     }, 500);
+  }
+
+  // Load saved currency from localStorage if it exists
+  document.addEventListener("DOMContentLoaded", () => {
+    const savedCurrency = localStorage.getItem("selectedCurrency") || "USD";
+    document.getElementById("currencySelect").value = savedCurrency;
+    updateCurrency(savedCurrency);
+  });
+
+  // Handle dropdown change
+  document.getElementById("currencySelect").addEventListener("change", () => {
+    const selectedCurrency = document.getElementById("currencySelect").value;
+    localStorage.setItem("selectedCurrency", selectedCurrency);
+    updateCurrency(selectedCurrency);
   });
 </script>
 </body>
