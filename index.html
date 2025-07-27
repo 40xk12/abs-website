@@ -425,6 +425,25 @@ header {
   <option value="USD">USD ($)</option>
   <option value="AED">AED (د.إ)</option>
 </select>
+  <script>
+  document.getElementById("currencySelect").addEventListener("change", () => {
+    const selectedCurrency = document.getElementById("currencySelect").value;
+
+    // Update Snipcart currency session
+    Snipcart.api.session.setCurrency(selectedCurrency);
+
+    // Set localization to match currency (this affects shipping options shown)
+    const localizationId = selectedCurrency === "AED" ? "currency-aed" : "currency-usd";
+    Snipcart.api.session.setLocalization(localizationId);
+  });
+
+  // Auto-apply on load if currency is already selected
+  window.addEventListener("load", () => {
+    const selectedCurrency = document.getElementById("currencySelect").value;
+    const localizationId = selectedCurrency === "AED" ? "currency-aed" : "currency-usd";
+    Snipcart.api.session.setLocalization(localizationId);
+  });
+</script>
   
     <section id="men" class="product-section">
       <h2>Men’s Collection</h2>
