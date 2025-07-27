@@ -671,73 +671,31 @@ header {
 </script>
   
 <script>
-  const currencyRates = {
-    USD: 1,
-    AED: 3.67
-  };
+  const setCurrencyAndLocalization = (selectedCurrency) => {
+    const localizationId = selectedCurrency === "AED" ? "currency-aed" : "currency-usd";
 
-  const currencySymbols = {
-    USD: "$",
-    AED: "د.إ"
-  };
-
-  const basePrices = {
-    "bracelet-black": 19.99,
-    "bracelet-silver": 19.99,
-    "necklace-black": 24,
-    "necklace-silver": 24,
-  };
-
-  // Function to update UI based on selected currency
-  function updateCurrency(selectedCurrency) {
-    const rate = currencyRates[selectedCurrency];
-    const symbol = currencySymbols[selectedCurrency];
-
-    // Update all product buttons
-    document.querySelectorAll(".snipcart-add-item").forEach(button => {
-      const id = button.getAttribute("data-item-id");
-      const base = basePrices[id];
-      if (base !== undefined) {
-        const converted = (base * rate).toFixed(2);
-        button.setAttribute("data-item-price", converted);
-        button.setAttribute("data-item-currency", selectedCurrency);
-
-        const symbolEl = button.querySelector(".price-symbol");
-        const valueEl = button.querySelector(".price-value");
-        if (symbolEl && valueEl) {
-          symbolEl.textContent = symbol;
-          valueEl.textContent = converted;
-        }
-      }
-    });
-
-    // Update Snipcart session
-    Snipcart.api.session.setCurrency(selectedCurrency);
-
-    // Fix cart UI symbols (optional but recommended)
-    setTimeout(() => {
-      const priceElements = document.querySelectorAll(
-        ".snipcart-item-line__price, .snipcart-summary-fees__amount, .snipcart-total__amount, .snipcart-base-button-primary__amount"
-      );
-
-      priceElements.forEach((el) => {
-        el.textContent = el.textContent.replace(/^\D*/, symbol + " ");
+    Snipcart.api.session.setCurrency(selectedCurrency).then(() => {
+      Snipcart.api.session.setLocalization(localizationId).then(() => {
+        // Optional: Force reload cart UI after change
+        Snipcart.api.theme.cart.close();
+        Snipcart.api.theme.cart.open();
       });
-    }, 500);
-  }
+    });
+  };
 
-  // Load saved currency from localStorage if it exists
-  document.addEventListener("DOMContentLoaded", () => {
-    const savedCurrency = localStorage.getItem("selectedCurrency") || "USD";
-    document.getElementById("currencySelect").value = savedCurrency;
-    updateCurrency(savedCurrency);
-  });
-
-  // Handle dropdown change
   document.getElementById("currencySelect").addEventListener("change", () => {
     const selectedCurrency = document.getElementById("currencySelect").value;
-    localStorage.setItem("selectedCurrency", selectedCurrency);
-    updateCurrency(selectedCurrency);
+    localStorage.setItem("selectedCurrency", selectedCurrency); // Save selection
+    setCurrencyAndLocalization(selectedCurrency);
+  });
+
+  // On load, apply saved currency
+  window.addEventListener("load", () => {
+    const saved = localStorage.getItem("selectedCurrency");
+    if (saved) {
+      document.getElementById("currencySelect").value = saved;
+      setCurrencyAndLocalization(saved);
+    }
   });
 </script>
 </body>
