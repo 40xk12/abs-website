@@ -443,6 +443,7 @@ header {
   data-item-image="images/necklace_black.png"
   data-item-custom1-name="Status"
   data-item-custom1-value="Pre-Order">
+      <span class="price-symbol">$</span><span class="price-value">24</span>
   Pre-Order
 </button>
           
@@ -461,6 +462,7 @@ header {
   data-item-image="images/necklace_silver.png"
   data-item-custom1-name="Status"
   data-item-custom1-value="Pre-Order">
+      <span class="price-symbol">$</span><span class="price-value">24</span>
   Pre-Order
 </button>
         </div>
@@ -476,6 +478,7 @@ header {
   data-item-url="https://40xk12.github.io/abs-website/"
   data-item-description="Rope bracelet with black enamel map. Daily elegance, scratch resistant."
   data-item-image="images/bracelet_black.png">
+   <span class="price-symbol">$</span><span class="price-value">19.99</span>
   Buy Now
 </button>  
           
@@ -492,6 +495,7 @@ header {
   data-item-url="https://40xk12.github.io/abs-website/"
   data-item-description="Minimalist silver stainless steel rope bracelet."
   data-item-image="images/bracelet_silver.png">
+      <span class="price-symbol">$</span><span class="price-value">19.99</span>
   Buy Now
 </button>  
         </div>
@@ -653,6 +657,11 @@ header {
     AED: 3.67
   };
 
+  const currencySymbols = {
+    USD: "$",
+    AED: "د.إ"
+  };
+
   const basePrices = {
     "bracelet-black": 19.99,
     "bracelet-silver": 19.99,
@@ -663,9 +672,9 @@ header {
   document.getElementById("currencySelect").addEventListener("change", () => {
     const selectedCurrency = document.getElementById("currencySelect").value;
     const rate = currencyRates[selectedCurrency];
-    const symbol = selectedCurrency === "AED" ? "د.إ" : "$";
+    const symbol = currencySymbols[selectedCurrency];
 
-    // Update product buttons
+    // Update product buttons visually and in attributes
     document.querySelectorAll(".snipcart-add-item").forEach(button => {
       const id = button.getAttribute("data-item-id");
       const base = basePrices[id];
@@ -673,13 +682,20 @@ header {
         const converted = (base * rate).toFixed(2);
         button.setAttribute("data-item-price", converted);
         button.setAttribute("data-item-currency", selectedCurrency);
+
+        const symbolEl = button.querySelector(".price-symbol");
+        const valueEl = button.querySelector(".price-value");
+        if (symbolEl && valueEl) {
+          symbolEl.textContent = symbol;
+          valueEl.textContent = converted;
+        }
       }
     });
 
-    // Update Snipcart session currency
+    // Update Snipcart currency session
     Snipcart.api.session.setCurrency(selectedCurrency);
 
-    // Fix currency symbol in cart UI
+    // Optional: fix currency symbol lag in cart UI
     setTimeout(() => {
       const priceElements = document.querySelectorAll(
         ".snipcart-item-line__price, .snipcart-summary-fees__amount, .snipcart-total__amount, .snipcart-base-button-primary__amount"
