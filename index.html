@@ -721,6 +721,38 @@ header {
     updateCurrency(selectedCurrency);
   });
 </script>
+  <script>
+  const internationalOnly = true;
+
+  function setCurrencyAndLocalization(selectedCurrency) {
+    // Set currency for product prices
+    Snipcart.api.session.setCurrency(selectedCurrency);
+
+    // Set localization only for international if needed
+    const localizationId =
+      selectedCurrency === "AED" ? "currency-aed" :
+      selectedCurrency === "USD" ? "currency-usd" :
+      null;
+
+    if (internationalOnly && localizationId) {
+      Snipcart.api.session.setLocalization(localizationId);
+    }
+  }
+
+  // On dropdown change
+  document.getElementById("currencySelect").addEventListener("change", () => {
+    const selected = document.getElementById("currencySelect").value;
+    localStorage.setItem("selectedCurrency", selected);
+    setCurrencyAndLocalization(selected);
+  });
+
+  // On page load
+  window.addEventListener("load", () => {
+    const savedCurrency = localStorage.getItem("selectedCurrency") || "USD";
+    document.getElementById("currencySelect").value = savedCurrency;
+    setCurrencyAndLocalization(savedCurrency);
+  });
+</script>
 </body>
 </html>
 
