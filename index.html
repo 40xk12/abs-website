@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -427,7 +428,7 @@ header {
 </select>
   
     <section id="men" class="product-section">
-      <h2>Men's Collection</h2>
+      <h2>Men’s Collection</h2>
       <div class="product-box">
         <div class="product">
           <img src="images/necklace_black.png" alt="Black Enamel Necklace">
@@ -503,7 +504,7 @@ header {
     </section>
 
     <section id="women" class="product-section">
-      <h2>Women's Collection</h2>
+      <h2>Women’s Collection</h2>
       <div class="product-box">
         <div class="product coming-soon">
           <h3>Necklace</h3>
@@ -597,10 +598,10 @@ header {
           ABS Jewelry was born from a simple idea: to carry a piece of home, always. As a Palestinian abroad, I often looked for subtle, elegant ways to represent my culture in my daily life — something minimalist, yet meaningful.
         </p>
         <p>
-          That's when the idea of ABS came to life — handcrafted jewelry designed to symbolize heritage with elegance. Whether it's our rope bracelets meant for daily wear, or our stainless steel necklaces that shine on special occasions, every piece is made with purpose.
+          That’s when the idea of ABS came to life — handcrafted jewelry designed to symbolize heritage with elegance. Whether it’s our rope bracelets meant for daily wear, or our stainless steel necklaces that shine on special occasions, every piece is made with purpose.
         </p>
         <p>
-          We offer international shipping and free returns within 30 days. This isn't just jewelry. It's a reminder of who we are — and where we come from.
+          We offer international shipping and free returns within 30 days. This isn’t just jewelry. It’s a reminder of who we are — and where we come from.
         </p>
       </div>
     </section>
@@ -618,7 +619,7 @@ header {
   <button type="submit">Submit Review</button>
 </form>
 
-<p id="complaint-confirmation" style="display:none; color: green;">Complaint received. We'll get back to you shortly!</p>
+<p id="complaint-confirmation" style="display:none; color: green;">Complaint received. We’ll get back to you shortly!</p>
 
 <script>
   function handleComplaintSubmit(event) {
@@ -693,12 +694,18 @@ header {
     });
 
     // Update Snipcart session
-    if (window.Snipcart && window.Snipcart.api && window.Snipcart.api.session) {
-      Snipcart.api.session.setCurrency(selectedCurrency);
-    }
+    Snipcart.api.session.setCurrency(selectedCurrency);
 
-    // Store currency preference
-    localStorage.setItem("selectedCurrency", selectedCurrency);
+    // Fix cart UI symbols (optional but recommended)
+    setTimeout(() => {
+      const priceElements = document.querySelectorAll(
+        ".snipcart-item-line__price, .snipcart-summary-fees__amount, .snipcart-total__amount, .snipcart-base-button-primary__amount"
+      );
+
+      priceElements.forEach((el) => {
+        el.textContent = el.textContent.replace(/^\D*/, symbol + " ");
+      });
+    }, 500);
   }
 
   // Load saved currency from localStorage if it exists
@@ -711,196 +718,21 @@ header {
   // Handle dropdown change
   document.getElementById("currencySelect").addEventListener("change", () => {
     const selectedCurrency = document.getElementById("currencySelect").value;
+    localStorage.setItem("selectedCurrency", selectedCurrency);
     updateCurrency(selectedCurrency);
   });
 </script>
-
 <script>
-  // Enhanced shipping method filtering with address validation
-  let shippingFilterApplied = false;
-  
   document.addEventListener("snipcart.ready", () => {
-    console.log("Snipcart ready");
-    
-    // Set initial currency
-    const savedCurrency = localStorage.getItem("selectedCurrency") || "USD";
-    Snipcart.api.session.setCurrency(savedCurrency);
-    
-    // Apply shipping filter and address validation
-    if (!shippingFilterApplied) {
-      Snipcart.api.shipping.onBeforeShow((methods, billingAddress, shippingAddress) => {
-        const currentCurrency = Snipcart.api.session.getCurrency();
-        const shippingCountry = shippingAddress ? shippingAddress.country : null;
-        
-        console.log("Current currency:", currentCurrency);
-        console.log("Shipping country:", shippingCountry);
-        console.log("Available methods:", methods.map(m => m.name));
-        
-        // Define AED allowed countries (Middle East region)
-        const aedCountries = ["AE", "KW", "PS", "IR", "SA", "OM", "YE", "QA", "JO"]; // UAE, Kuwait, Palestine, Iran, Saudi Arabia, Oman, Yemen, Qatar, Jordan
-        
-        // AED Currency restrictions
-        if (currentCurrency === "AED") {
-          // Block AED from shipping to USA
-          if (shippingCountry === "US") {
-            console.log("Blocking AED shipping to USA");
-            setTimeout(() => {
-              alert("Sorry, AED currency orders cannot be shipped to USA addresses. Please switch to USD currency or use a different shipping address.");
-            }, 100);
-            return [];
-          }
-          
-          // Block AED from international shipping (only allow Middle East region)
-          if (!aedCountries.includes(shippingCountry)) {
-            console.log("Blocking AED international shipping to:", shippingCountry);
-            setTimeout(() => {
-              alert("Sorry, AED currency is only available for shipping within the Middle East region (UAE, Kuwait, Palestine, Iran, Saudi Arabia, Oman, Yemen, Qatar, Jordan). For international shipping, please switch to USD currency.");
-            }, 100);
-            return [];
-          }
-          
-          // For AED, only show UAE LOCAL shipping method
-          const filtered = methods.filter(method => method.name === "UAE LOCAL - AED");
-          console.log("AED filtered methods:", filtered.map(m => m.name));
-          return filtered;
-        }
-        
-        // USD Currency restrictions
-        if (currentCurrency === "USD") {
-          // Block USD from shipping to Middle East region  
-          if (aedCountries.includes(shippingCountry)) {
-            console.log("Blocking USD shipping to Middle East region");
-            setTimeout(() => {
-              alert("Sorry, USD currency orders cannot be shipped to Middle East region. Please switch to AED currency.");
-            }, 100);
-            return [];
-          }
-          
-          // For USD, show both USA Standard and International shipping
-          const filtered = methods.filter(method => 
-            method.name === "USA STANDARD - USD" || 
-            method.name === "BASIC INTERNATIONAL SHIPPING - USD"
-          );
-          console.log("USD filtered methods:", filtered.map(m => m.name));
-          return filtered;
-        }
-        
-        // Fallback - should not reach here
-        console.log("Fallback - no currency restrictions applied");
-        return methods;
-      });
-      shippingFilterApplied = true;
-    }
+    const selectedCurrency = localStorage.getItem("selectedCurrency") || "USD";
+    const suffix = selectedCurrency === "AED" ? " - AED" : " - USD";
 
-    // Handle cart events
-    Snipcart.events.on('cart.opened', () => {
-      const savedCurrency = localStorage.getItem("selectedCurrency") || "USD";
-      console.log("Cart opened, setting currency to:", savedCurrency);
-      Snipcart.api.session.setCurrency(savedCurrency);
-    });
-
-    // Handle checkout events and validate address changes
-    Snipcart.events.on('checkout.step.changed', (step) => {
-      if (step === 'shipping') {
-        const savedCurrency = localStorage.getItem("selectedCurrency") || "USD";
-        console.log("Shipping step, ensuring currency is:", savedCurrency);
-        Snipcart.api.session.setCurrency(savedCurrency);
-      }
-    });
-
-    // Validate address when billing address changes
-    Snipcart.events.on('billing_address.changed', (address) => {
-      validateAddressCurrency(address);
-    });
-
-    // Validate address when shipping address changes
-    Snipcart.events.on('shipping_address.changed', (address) => {
-      validateAddressCurrency(address);
+    Snipcart.api.shipping.onBeforeShow((methods) => {
+      return methods.filter(method => method.name.endsWith(suffix));
     });
   });
-
-  // Function to validate address against currency
-  function validateAddressCurrency(address) {
-    const currentCurrency = Snipcart.api.session.getCurrency();
-    const country = address.country;
-    
-    console.log("Address changed - Currency:", currentCurrency, "Country:", country);
-    
-    const aedCountries = ["AE", "KW", "PS", "IR", "SA", "OM", "YE", "QA", "JO"]; // UAE, Kuwait, Palestine, Iran, Saudi Arabia, Oman, Yemen, Qatar, Jordan
-    
-    // Check for AED currency restrictions
-    if (currentCurrency === "AED") {
-      // Block AED from USA
-      if (country === "US") {
-        setTimeout(() => {
-          alert("AED currency cannot be used for USA addresses. Please switch to USD currency or change your address.");
-        }, 500);
-        return;
-      }
-      
-      // Block AED from international addresses (only allow Middle East region)
-      if (!aedCountries.includes(country)) {
-        setTimeout(() => {
-          alert("AED currency is only available for shipping within the Middle East region (UAE, Kuwait, Palestine, Iran, Saudi Arabia, Oman, Yemen, Qatar, Jordan). For international shipping, please switch to USD currency.");
-        }, 500);
-        return;
-      }
-    }
-    
-    // Check for USD currency with Middle East region addresses
-    if (currentCurrency === "USD" && aedCountries.includes(country)) {
-      setTimeout(() => {
-        alert("USD currency cannot be used for Middle East region. Please switch to AED currency or change your address.");
-      }, 500);
-    }
-  }
-
-  // Enhanced currency update function
-  function updateCurrency(selectedCurrency) {
-    const rate = currencyRates[selectedCurrency];
-    const symbol = currencySymbols[selectedCurrency];
-
-    // Update all product buttons
-    document.querySelectorAll(".snipcart-add-item").forEach(button => {
-      const id = button.getAttribute("data-item-id");
-      const base = basePrices[id];
-      if (base !== undefined) {
-        const converted = (base * rate).toFixed(2);
-        button.setAttribute("data-item-price", converted);
-        button.setAttribute("data-item-currency", selectedCurrency);
-
-        const symbolEl = button.querySelector(".price-symbol");
-        const valueEl = button.querySelector(".price-value");
-        if (symbolEl && valueEl) {
-          symbolEl.textContent = symbol;
-          valueEl.textContent = converted;
-        }
-      }
-    });
-
-    // Update Snipcart session and clear cart if currency changed
-    if (window.Snipcart && window.Snipcart.api && window.Snipcart.api.session) {
-      const currentCurrency = Snipcart.api.session.getCurrency();
-      if (currentCurrency !== selectedCurrency) {
-        console.log("Currency changed from", currentCurrency, "to", selectedCurrency);
-        
-        // Clear cart to avoid currency conflicts
-        Snipcart.api.cart.clear();
-        
-        // Set new currency
-        Snipcart.api.session.setCurrency(selectedCurrency);
-        
-        // Show notification
-        setTimeout(() => {
-          alert("Currency changed. Your cart has been cleared to avoid pricing conflicts.");
-        }, 100);
-      }
-    }
-
-    // Store currency preference
-    localStorage.setItem("selectedCurrency", selectedCurrency);
-  }
 </script>
 </body>
 </html>
+
 
