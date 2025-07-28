@@ -721,26 +721,13 @@ header {
     updateCurrency(selectedCurrency);
   });
 </script>
- <script>
-  document.addEventListener("DOMContentLoaded", function () {
-    const currencySelect = document.getElementById("currencySelect");
-    const savedCurrency = localStorage.getItem("selectedCurrency") || "USD";
+<script>
+  document.addEventListener("snipcart.ready", () => {
+    const selectedCurrency = localStorage.getItem("selectedCurrency") || "USD";
+    const suffix = selectedCurrency === "AED" ? " - AED" : " - USD";
 
-    Snipcart.events.on('snipcart.ready', () => {
-      Snipcart.api.session.setCurrency(savedCurrency);
-
-      Snipcart.api.shipping.onBeforeShow((methods) => {
-        const suffix = savedCurrency === "AED" ? " - AED" : " - USD";
-        return methods.filter(method => method.name.endsWith(suffix));
-      });
-    });
-
-    currencySelect.value = savedCurrency;
-
-    currencySelect.addEventListener("change", function () {
-      const newCurrency = this.value;
-      localStorage.setItem("selectedCurrency", newCurrency);
-      location.reload(); // reload to apply change
+    Snipcart.api.shipping.onBeforeShow((methods) => {
+      return methods.filter(method => method.name.endsWith(suffix));
     });
   });
 </script>
