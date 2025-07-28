@@ -716,7 +716,9 @@ header {
 </script>
 
 <script>
-  // Fixed shipping method filtering
+  // Enhanced shipping method filtering with currency change handling
+  let shippingFilterApplied = false;
+  
   document.addEventListener("snipcart.ready", () => {
     console.log("Snipcart ready");
     
@@ -724,31 +726,85 @@ header {
     const savedCurrency = localStorage.getItem("selectedCurrency") || "USD";
     Snipcart.api.session.setCurrency(savedCurrency);
     
-    // Filter shipping methods based on currency
-    Snipcart.api.shipping.onBeforeShow((methods) => {
-      const currentCurrency = Snipcart.api.session.getCurrency();
-      const suffix = currentCurrency === "AED" ? " - AED" : " - USD";
-      
-      console.log("Current currency:", currentCurrency);
-      console.log("Available methods:", methods.map(m => m.name));
-      
-      const filtered = methods.filter(method => method.name.endsWith(suffix));
-      console.log("Filtered methods:", filtered.map(m => m.name));
-      
-      return filtered;
-    });
-  });
+    // Apply shipping filter only once
+    if (!shippingFilterApplied) {
+      Snipcart.api.shipping.onBeforeShow((methods) => {
+        const currentCurrency = Snipcart.api.session.getCurrency();
+        const suffix = currentCurrency === "AED" ? " - AED" : " - USD";
+        
+        console.log("Current currency:", currentCurrency);
+        console.log("Available methods:", methods.map(m => m.name));
+        
+        const filtered = methods.filter(method => method.name.endsWith(suffix));
+        console.log("Filtered methods:", filtered.map(m => m.name));
+        
+        return filtered;
+      });
+      shippingFilterApplied = true;
+    }
 
-  // Also handle currency changes during session
-  document.addEventListener("snipcart.ready", () => {
+    // Handle cart events
     Snipcart.events.on('cart.opened', () => {
-      // Re-apply currency when cart opens
       const savedCurrency = localStorage.getItem("selectedCurrency") || "USD";
-      if (Snipcart.api.session.getCurrency() !== savedCurrency) {
+      console.log("Cart opened, setting currency to:", savedCurrency);
+      Snipcart.api.session.setCurrency(savedCurrency);
+    });
+
+    // Handle checkout events
+    Snipcart.events.on('checkout.step.changed', (step) => {
+      if (step === 'shipping') {
+        const savedCurrency = localStorage.getItem("selectedCurrency") || "USD";
+        console.log("Shipping step, ensuring currency is:", savedCurrency);
         Snipcart.api.session.setCurrency(savedCurrency);
       }
     });
   });
+
+  // Enhanced currency update function
+  function updateCurrency(selectedCurrency) {
+    const rate = currencyRates[selectedCurrency];
+    const symbol = currencySymbols[selectedCurrency];
+
+    // Update all product buttons
+    document.querySelectorAll(".snipcart-add-item").forEach(button => {
+      const id = button.getAttribute("data-item-id");
+      const base = basePrices[id];
+      if (base !== undefined) {
+        const converted = (base * rate).toFixed(2);
+        button.setAttribute("data-item-price", converted);
+        button.setAttribute("data-item-currency", selectedCurrency);
+
+        const symbolEl = button.querySelector(".price-symbol");
+        const valueEl = button.querySelector(".price-value");
+        if (symbolEl && valueEl) {
+          symbolEl.textContent = symbol;
+          valueEl.textContent = converted;
+        }
+      }
+    });
+
+    // Update Snipcart session and clear cart if currency changed
+    if (window.Snipcart && window.Snipcart.api && window.Snipcart.api.session) {
+      const currentCurrency = Snipcart.api.session.getCurrency();
+      if (currentCurrency !== selectedCurrency) {
+        console.log("Currency changed from", currentCurrency, "to", selectedCurrency);
+        
+        // Clear cart to avoid currency conflicts
+        Snipcart.api.cart.clear();
+        
+        // Set new currency
+        Snipcart.api.session.setCurrency(selectedCurrency);
+        
+        // Show notification
+        setTimeout(() => {
+          alert("Currency changed. Your cart has been cleared to avoid pricing conflicts.");
+        }, 100);
+      }
+    }
+
+    // Store currency preference
+    localStorage.setItem("selectedCurrency", selectedCurrency);
+  }
 </script>
 </body>
 </html>
