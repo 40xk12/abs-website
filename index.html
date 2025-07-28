@@ -427,7 +427,7 @@ header {
 </select>
   
     <section id="men" class="product-section">
-      <h2>Men’s Collection</h2>
+      <h2>Men's Collection</h2>
       <div class="product-box">
         <div class="product">
           <img src="images/necklace_black.png" alt="Black Enamel Necklace">
@@ -503,7 +503,7 @@ header {
     </section>
 
     <section id="women" class="product-section">
-      <h2>Women’s Collection</h2>
+      <h2>Women's Collection</h2>
       <div class="product-box">
         <div class="product coming-soon">
           <h3>Necklace</h3>
@@ -597,10 +597,10 @@ header {
           ABS Jewelry was born from a simple idea: to carry a piece of home, always. As a Palestinian abroad, I often looked for subtle, elegant ways to represent my culture in my daily life — something minimalist, yet meaningful.
         </p>
         <p>
-          That’s when the idea of ABS came to life — handcrafted jewelry designed to symbolize heritage with elegance. Whether it’s our rope bracelets meant for daily wear, or our stainless steel necklaces that shine on special occasions, every piece is made with purpose.
+          That's when the idea of ABS came to life — handcrafted jewelry designed to symbolize heritage with elegance. Whether it's our rope bracelets meant for daily wear, or our stainless steel necklaces that shine on special occasions, every piece is made with purpose.
         </p>
         <p>
-          We offer international shipping and free returns within 30 days. This isn’t just jewelry. It’s a reminder of who we are — and where we come from.
+          We offer international shipping and free returns within 30 days. This isn't just jewelry. It's a reminder of who we are — and where we come from.
         </p>
       </div>
     </section>
@@ -618,7 +618,7 @@ header {
   <button type="submit">Submit Review</button>
 </form>
 
-<p id="complaint-confirmation" style="display:none; color: green;">Complaint received. We’ll get back to you shortly!</p>
+<p id="complaint-confirmation" style="display:none; color: green;">Complaint received. We'll get back to you shortly!</p>
 
 <script>
   function handleComplaintSubmit(event) {
@@ -693,18 +693,12 @@ header {
     });
 
     // Update Snipcart session
-    Snipcart.api.session.setCurrency(selectedCurrency);
+    if (window.Snipcart && window.Snipcart.api && window.Snipcart.api.session) {
+      Snipcart.api.session.setCurrency(selectedCurrency);
+    }
 
-    // Fix cart UI symbols (optional but recommended)
-    setTimeout(() => {
-      const priceElements = document.querySelectorAll(
-        ".snipcart-item-line__price, .snipcart-summary-fees__amount, .snipcart-total__amount, .snipcart-base-button-primary__amount"
-      );
-
-      priceElements.forEach((el) => {
-        el.textContent = el.textContent.replace(/^\D*/, symbol + " ");
-      });
-    }, 500);
+    // Store currency preference
+    localStorage.setItem("selectedCurrency", selectedCurrency);
   }
 
   // Load saved currency from localStorage if it exists
@@ -717,17 +711,42 @@ header {
   // Handle dropdown change
   document.getElementById("currencySelect").addEventListener("change", () => {
     const selectedCurrency = document.getElementById("currencySelect").value;
-    localStorage.setItem("selectedCurrency", selectedCurrency);
     updateCurrency(selectedCurrency);
   });
 </script>
-<script>
-  document.addEventListener("snipcart.ready", () => {
-    const selectedCurrency = localStorage.getItem("selectedCurrency") || "USD";
-    const suffix = selectedCurrency === "AED" ? " - AED" : " - USD";
 
+<script>
+  // Fixed shipping method filtering
+  document.addEventListener("snipcart.ready", () => {
+    console.log("Snipcart ready");
+    
+    // Set initial currency
+    const savedCurrency = localStorage.getItem("selectedCurrency") || "USD";
+    Snipcart.api.session.setCurrency(savedCurrency);
+    
+    // Filter shipping methods based on currency
     Snipcart.api.shipping.onBeforeShow((methods) => {
-      return methods.filter(method => method.name.endsWith(suffix));
+      const currentCurrency = Snipcart.api.session.getCurrency();
+      const suffix = currentCurrency === "AED" ? " - AED" : " - USD";
+      
+      console.log("Current currency:", currentCurrency);
+      console.log("Available methods:", methods.map(m => m.name));
+      
+      const filtered = methods.filter(method => method.name.endsWith(suffix));
+      console.log("Filtered methods:", filtered.map(m => m.name));
+      
+      return filtered;
+    });
+  });
+
+  // Also handle currency changes during session
+  document.addEventListener("snipcart.ready", () => {
+    Snipcart.events.on('cart.opened', () => {
+      // Re-apply currency when cart opens
+      const savedCurrency = localStorage.getItem("selectedCurrency") || "USD";
+      if (Snipcart.api.session.getCurrency() !== savedCurrency) {
+        Snipcart.api.session.setCurrency(savedCurrency);
+      }
     });
   });
 </script>
