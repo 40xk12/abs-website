@@ -716,7 +716,7 @@ header {
 </script>
 
 <script>
-  // Enhanced shipping method filtering with currency change handling
+  // Enhanced shipping method filtering with address validation
   let shippingFilterApplied = false;
   
   document.addEventListener("snipcart.ready", () => {
@@ -726,19 +726,68 @@ header {
     const savedCurrency = localStorage.getItem("selectedCurrency") || "USD";
     Snipcart.api.session.setCurrency(savedCurrency);
     
-    // Apply shipping filter only once
+    // Apply shipping filter and address validation
     if (!shippingFilterApplied) {
-      Snipcart.api.shipping.onBeforeShow((methods) => {
+      Snipcart.api.shipping.onBeforeShow((methods, billingAddress, shippingAddress) => {
         const currentCurrency = Snipcart.api.session.getCurrency();
-        const suffix = currentCurrency === "AED" ? " - AED" : " - USD";
+        const shippingCountry = shippingAddress ? shippingAddress.country : null;
         
         console.log("Current currency:", currentCurrency);
+        console.log("Shipping country:", shippingCountry);
         console.log("Available methods:", methods.map(m => m.name));
         
-        const filtered = methods.filter(method => method.name.endsWith(suffix));
-        console.log("Filtered methods:", filtered.map(m => m.name));
+        // Define AED allowed countries (Middle East region)
+        const aedCountries = ["AE", "KW", "PS", "IR", "SA", "OM", "YE", "QA", "JO"]; // UAE, Kuwait, Palestine, Iran, Saudi Arabia, Oman, Yemen, Qatar, Jordan
         
-        return filtered;
+        // AED Currency restrictions
+        if (currentCurrency === "AED") {
+          // Block AED from shipping to USA
+          if (shippingCountry === "US") {
+            console.log("Blocking AED shipping to USA");
+            setTimeout(() => {
+              alert("Sorry, AED currency orders cannot be shipped to USA addresses. Please switch to USD currency or use a different shipping address.");
+            }, 100);
+            return [];
+          }
+          
+          // Block AED from international shipping (only allow Middle East region)
+          if (!aedCountries.includes(shippingCountry)) {
+            console.log("Blocking AED international shipping to:", shippingCountry);
+            setTimeout(() => {
+              alert("Sorry, AED currency is only available for shipping within the Middle East region (UAE, Kuwait, Palestine, Iran, Saudi Arabia, Oman, Yemen, Qatar, Jordan). For international shipping, please switch to USD currency.");
+            }, 100);
+            return [];
+          }
+          
+          // For AED, only show UAE LOCAL shipping method
+          const filtered = methods.filter(method => method.name === "UAE LOCAL - AED");
+          console.log("AED filtered methods:", filtered.map(m => m.name));
+          return filtered;
+        }
+        
+        // USD Currency restrictions
+        if (currentCurrency === "USD") {
+          // Block USD from shipping to Middle East region  
+          if (aedCountries.includes(shippingCountry)) {
+            console.log("Blocking USD shipping to Middle East region");
+            setTimeout(() => {
+              alert("Sorry, USD currency orders cannot be shipped to Middle East region. Please switch to AED currency.");
+            }, 100);
+            return [];
+          }
+          
+          // For USD, show both USA Standard and International shipping
+          const filtered = methods.filter(method => 
+            method.name === "USA STANDARD - USD" || 
+            method.name === "BASIC INTERNATIONAL SHIPPING - USD"
+          );
+          console.log("USD filtered methods:", filtered.map(m => m.name));
+          return filtered;
+        }
+        
+        // Fallback - should not reach here
+        console.log("Fallback - no currency restrictions applied");
+        return methods;
       });
       shippingFilterApplied = true;
     }
@@ -750,7 +799,7 @@ header {
       Snipcart.api.session.setCurrency(savedCurrency);
     });
 
-    // Handle checkout events
+    // Handle checkout events and validate address changes
     Snipcart.events.on('checkout.step.changed', (step) => {
       if (step === 'shipping') {
         const savedCurrency = localStorage.getItem("selectedCurrency") || "USD";
@@ -758,7 +807,53 @@ header {
         Snipcart.api.session.setCurrency(savedCurrency);
       }
     });
+
+    // Validate address when billing address changes
+    Snipcart.events.on('billing_address.changed', (address) => {
+      validateAddressCurrency(address);
+    });
+
+    // Validate address when shipping address changes
+    Snipcart.events.on('shipping_address.changed', (address) => {
+      validateAddressCurrency(address);
+    });
   });
+
+  // Function to validate address against currency
+  function validateAddressCurrency(address) {
+    const currentCurrency = Snipcart.api.session.getCurrency();
+    const country = address.country;
+    
+    console.log("Address changed - Currency:", currentCurrency, "Country:", country);
+    
+    const aedCountries = ["AE", "KW", "PS", "IR", "SA", "OM", "YE", "QA", "JO"]; // UAE, Kuwait, Palestine, Iran, Saudi Arabia, Oman, Yemen, Qatar, Jordan
+    
+    // Check for AED currency restrictions
+    if (currentCurrency === "AED") {
+      // Block AED from USA
+      if (country === "US") {
+        setTimeout(() => {
+          alert("AED currency cannot be used for USA addresses. Please switch to USD currency or change your address.");
+        }, 500);
+        return;
+      }
+      
+      // Block AED from international addresses (only allow Middle East region)
+      if (!aedCountries.includes(country)) {
+        setTimeout(() => {
+          alert("AED currency is only available for shipping within the Middle East region (UAE, Kuwait, Palestine, Iran, Saudi Arabia, Oman, Yemen, Qatar, Jordan). For international shipping, please switch to USD currency.");
+        }, 500);
+        return;
+      }
+    }
+    
+    // Check for USD currency with Middle East region addresses
+    if (currentCurrency === "USD" && aedCountries.includes(country)) {
+      setTimeout(() => {
+        alert("USD currency cannot be used for Middle East region. Please switch to AED currency or change your address.");
+      }, 500);
+    }
+  }
 
   // Enhanced currency update function
   function updateCurrency(selectedCurrency) {
