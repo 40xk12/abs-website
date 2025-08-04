@@ -399,10 +399,19 @@ header {
 </head>
 <body>
 
+    <div id="regionOverlay" style="position:fixed;inset:0;background:white;z-index:99999;display:flex;justify-content:center;align-items:center;">
+  <div style="text-align:center;">
+    <h2>Where are you shopping from?</h2>
+    <button onclick="setRegion('US')">🇺🇸 US / Canada</button>
+    <button onclick="setRegion('GCC')">🇦🇪 GCC (UAE, Saudi, Qatar, etc.)</button>
+    <button onclick="setRegion('INTL')">🌍 International</button>
+  </div>
+</div>
+  
     <div class="logo-intro">
       <img src="images/logo.webp" alt="ABS Logo" class="logo-animated" />
     </div>
-
+  
     <header>
       <img src="images/logo.webp" class="logo" alt="ABS Logo" />
       <h1 class="brand-title">ABS Jewelry</h1>
@@ -421,14 +430,6 @@ header {
       <h2>Your culture, always with you.</h2>
     </section>
 
-  <div id="regionOverlay" style="position:fixed;inset:0;background:white;z-index:99999;display:flex;justify-content:center;align-items:center;">
-  <div style="text-align:center;">
-    <h2>Where are you shopping from?</h2>
-    <button onclick="setRegion('US')">🇺🇸 US / Canada</button>
-    <button onclick="setRegion('GCC')">🇦🇪 GCC (UAE, Saudi, Qatar, etc.)</button>
-    <button onclick="setRegion('INTL')">🌍 International</button>
-  </div>
-</div>
   
     <section id="men" class="product-section">
       <h2>Men’s Collection</h2>
