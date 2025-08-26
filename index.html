@@ -403,6 +403,35 @@ header {
   from { opacity: 0; }
   to { opacity: 1; }
 }
+    @media (max-width: 768px) {
+  /* Adjusts the layout of the order summary for mobile */
+  .snipcart-layout__content {
+    flex-direction: column-reverse !important;
+  }
+
+  .snipcart-cart__secondary {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 auto !important;
+    padding: 1rem !important;
+    background-color: #f9f9f9;
+    border-top: 1px solid #ddd;
+  }
+
+  .snipcart-cart__content {
+    width: 100% !important;
+    padding-bottom: 0 !important;
+  }
+
+  .snipcart-cart__footer {
+    display: block !important;
+    margin-top: 1rem;
+  }
+
+  .snipcart-summary-fees {
+    font-size: 1rem;
+  }
+}
     
   </style>
 </head>
