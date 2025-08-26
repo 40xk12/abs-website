@@ -403,9 +403,9 @@ header {
   from { opacity: 0; }
   to { opacity: 1; }
 }
-    @media (max-width: 768px) {
+   @media (max-width: 768px) {
   .order-summary-toggle {
-    display: block;
+    display: none;
     background-color: #000;
     color: #fff;
     padding: 12px;
@@ -417,22 +417,18 @@ header {
     z-index: 1001;
   }
 
-  .snipcart-cart__content {
-    display: none;
+  body.snipcart-checkout .order-summary-toggle {
+    display: block;
   }
 
-  .snipcart-cart__content.expanded {
-    display: block;
+  body.snipcart-checkout .snipcart__box.collapsed {
+    display: none !important;
   }
 }
 
 @media (min-width: 769px) {
   .order-summary-toggle {
-    display: none;
-  }
-
-  .snipcart-cart__content {
-    display: block !important;
+    display: none !important;
   }
 }
     
@@ -441,7 +437,7 @@ header {
 <body>
 
   <div class="order-summary-toggle" onclick="toggleOrderSummary()">
-  Show Order Summary
+  Hide Order Summary
 </div>
   
     <div class="logo-intro">
@@ -777,19 +773,31 @@ header {
   }
 </script>
 
-  <script>
+ <script>
   function toggleOrderSummary() {
-    const summary = document.querySelector(".snipcart-cart__content");
-    const button = document.querySelector(".order-summary-toggle");
+    const box = document.querySelector(".snipcart__box");
+    const btn = document.querySelector(".order-summary-toggle");
 
-    if (summary.classList.contains("expanded")) {
-      summary.classList.remove("expanded");
-      button.textContent = "Show Order Summary";
-    } else {
-      summary.classList.add("expanded");
-      button.textContent = "Hide Order Summary";
-    }
+    if (!box) return;
+
+    const isCollapsed = box.classList.toggle("collapsed");
+    btn.textContent = isCollapsed ? "Show Order Summary" : "Hide Order Summary";
   }
+
+  document.addEventListener("snipcart.ready", () => {
+    const btn = document.querySelector(".order-summary-toggle");
+    if (!btn) return;
+
+    // Reset on step change
+    Snipcart.events.on("checkout.step.changed", () => {
+      const box = document.querySelector(".snipcart__box");
+      const btn = document.querySelector(".order-summary-toggle");
+      if (box && btn) {
+        box.classList.remove("collapsed");
+        btn.textContent = "Hide Order Summary";
+      }
+    });
+  });
 </script>
   
 </body>
