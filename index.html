@@ -452,7 +452,7 @@ header {
   class="snipcart-add-item"
   data-item-id="necklace-black"
   data-item-name="Palestine on Your Heart – Black"
-  data-item-price="34.99"
+  data-item-price="{&quot;usd&quot;: 34.99, &quot;aed&quot;: 128.39}"
   data-item-url="https://40xk12.github.io/abs-website/"
   data-item-description="Black enamel pendant on cuban chain"
   data-item-image="images/necklace_black.png">
@@ -469,7 +469,7 @@ header {
   class="snipcart-add-item"
   data-item-id="necklace-silver"
   data-item-name="Palestine on Your Heart – Silver"
-  data-item-price="34.99"
+  data-item-price="{&quot;usd&quot;: 34.99, &quot;aed&quot;: 128.39}"
   data-item-url="https://40xk12.github.io/abs-website/"
   data-item-description="Black enamel pendant on cuban chain"
   data-item-image="images/necklace_silver.png">
@@ -486,7 +486,7 @@ header {
   class="snipcart-add-item"
   data-item-id="bracelet-black"
   data-item-name="Daily Thread – Black"
-  data-item-price="19.99"
+  data-item-price="{&quot;usd&quot;: 19.99, &quot;aed&quot;: 73.36}"
   data-item-url="https://40xk12.github.io/abs-website/"
   data-item-description="Rope bracelet with black enamel map. Daily elegance, scratch resistant."
   data-item-image="images/bracelet_black.png">
@@ -503,7 +503,7 @@ header {
   class="snipcart-add-item"
   data-item-id="bracelet-silver"
   data-item-name="Daily Thread – silver"
-  data-item-price="19.99"
+  data-item-price="{&quot;usd&quot;: 19.99, &quot;aed&quot;: 73.36}"
   data-item-url="https://40xk12.github.io/abs-website/"
   data-item-description="Minimalist silver stainless steel rope bracelet."
   data-item-image="images/bracelet_silver.png">
@@ -663,74 +663,72 @@ header {
     (()=>{var c,d;(d=(c=window.SnipcartSettings).version)!=null||(c.version="3.0");var s,S;(S=(s=window.SnipcartSettings).timeoutDuration)!=null||(s.timeoutDuration=2750);var l,p;(p=(l=window.SnipcartSettings).domain)!=null||(l.domain="cdn.snipcart.com");var w,u;(u=(w=window.SnipcartSettings).protocol)!=null||(w.protocol="https");var f=window.SnipcartSettings.version.includes("v3.0.0-ci")||window.SnipcartSettings.version!="3.0"&&window.SnipcartSettings.version.localeCompare("3.4.0",void 0,{numeric:!0,sensitivity:"base"})===-1,m=["focus","mouseover","touchmove","scroll","keydown"];window.LoadSnipcart=o;document.readyState==="loading"?document.addEventListener("DOMContentLoaded",r):r();function r(){window.SnipcartSettings.loadStrategy?window.SnipcartSettings.loadStrategy==="on-user-interaction"&&(m.forEach(t=>document.addEventListener(t,o)),setTimeout(o,window.SnipcartSettings.timeoutDuration)):o()}var a=!1;function o(){if(a)return;a=!0;let t=document.getElementsByTagName("head")[0],e=document.querySelector("#snipcart"),i=document.querySelector(`src[src^="${window.SnipcartSettings.protocol}://${window.SnipcartSettings.domain}"][src$="snipcart.js"]`),n=document.querySelector(`link[href^="${window.SnipcartSettings.protocol}://${window.SnipcartSettings.domain}"][href$="snipcart.css"]`);e||(e=document.createElement("div"),e.id="snipcart",e.setAttribute("hidden","true"),document.body.appendChild(e)),v(e),i||(i=document.createElement("script"),i.src=`${window.SnipcartSettings.protocol}://${window.SnipcartSettings.domain}/themes/v${window.SnipcartSettings.version}/default/snipcart.js`,i.async=!0,t.appendChild(i)),n||(n=document.createElement("link"),n.rel="stylesheet",n.type="text/css",n.href=`${window.SnipcartSettings.protocol}://${window.SnipcartSettings.domain}/themes/v${window.SnipcartSettings.version}/default/snipcart.css`,t.prepend(n)),m.forEach(g=>document.removeEventListener(g,o))}function v(t){!f||(t.dataset.apiKey=window.SnipcartSettings.publicApiKey,window.SnipcartSettings.addProductBehavior&&(t.dataset.configAddProductBehavior=window.SnipcartSettings.addProductBehavior),window.SnipcartSettings.modalStyle&&(t.dataset.configModalStyle=window.SnipcartSettings.modalStyle),window.SnipcartSettings.currency&&(t.dataset.currency=window.SnipcartSettings.currency),window.SnipcartSettings.templatesUrl&&(t.dataset.templatesUrl=window.SnipcartSettings.templatesUrl))}})();
 </script>
 
- <script>
-  function updateCurrency(currency) {
-    const symbol = currency === "AED" ? "د.إ" : "$";
-    const rate = currency === "AED" ? 3.67 : 1;
-
-    document.querySelectorAll(".snipcart-add-item").forEach(button => {
-      const id = button.getAttribute("data-item-id");
-      const base = {
-        "bracelet-black": 19.99,
-        "bracelet-silver": 19.99,
-        "necklace-black": 34.99,
-        "necklace-silver": 34.99,
-      }[id];
-      if (base !== undefined) {
-        const converted = (base * rate).toFixed(2);
-        button.setAttribute("data-item-price", converted);
-        button.setAttribute("data-item-currency", currency);
-
-        const symbolEl = button.querySelector(".price-symbol");
-        const valueEl = button.querySelector(".price-value");
-        if (symbolEl && valueEl) {
-          symbolEl.textContent = symbol;
-          valueEl.textContent = converted;
-        }
-      }
-    });
-
-    if (window.Snipcart) {
-      Snipcart.api.session.setCurrency(currency);
+<script>
+function updatePriceDisplay(currency) {
+  const symbol = currency === "AED" ? "د.إ" : "$";
+  const prices = {
+    "USD": { 
+      "necklace-black": "34.99", 
+      "necklace-silver": "34.99",
+      "bracelet-black": "19.99", 
+      "bracelet-silver": "19.99" 
+    },
+    "AED": { 
+      "necklace-black": "128.39", 
+      "necklace-silver": "128.39",
+      "bracelet-black": "73.36", 
+      "bracelet-silver": "73.36" 
     }
+  };
 
-    setTimeout(() => {
-      const priceElements = document.querySelectorAll(
-        ".snipcart-item-line__price, .snipcart-summary-fees__amount, .snipcart-total__amount, .snipcart-base-button-primary__amount"
-      );
-      priceElements.forEach(el => {
-        el.textContent = el.textContent.replace(/^\D*/, symbol + " ");
-      });
-    }, 500);
-  }
-
-  function setRegion(region) {
-    let currency = "USD";
-    if (region === "GCC") currency = "AED";
-    localStorage.setItem("selectedCurrency", currency);
-    localStorage.setItem("selectedRegion", region);
-    updateCurrency(currency);
-    document.getElementById("regionOverlay").style.display = "none";
-  }
-
-  document.addEventListener("DOMContentLoaded", () => {
-    const region = localStorage.getItem("selectedRegion");
-    const currency = localStorage.getItem("selectedCurrency") || "USD";
-
-    if (!region) {
-      document.getElementById("regionOverlay").style.display = "flex";
-    } else {
-      updateCurrency(currency);
+  document.querySelectorAll(".snipcart-add-item").forEach(button => {
+    const id = button.getAttribute("data-item-id");
+    const symbolEl = button.querySelector(".price-symbol");
+    const valueEl = button.querySelector(".price-value");
+    
+    if (symbolEl && valueEl && prices[currency][id]) {
+      symbolEl.textContent = symbol;
+      valueEl.textContent = prices[currency][id];
     }
   });
+}
 
-  document.addEventListener("snipcart.ready", () => {
-    const selectedCurrency = localStorage.getItem("selectedCurrency") || "USD";
-    const suffix = selectedCurrency === "AED" ? " - AED" : " - USD";
-    Snipcart.api.shipping.onBeforeShow(methods => {
-      return methods.filter(method => method.name.endsWith(suffix));
-    });
+function setRegion(region) {
+  let currency = "USD";
+  if (region === "GCC") currency = "AED";
+  
+  localStorage.setItem("selectedCurrency", currency);
+  localStorage.setItem("selectedRegion", region);
+  
+  if (window.Snipcart) {
+    Snipcart.api.session.setCurrency(currency.toLowerCase());
+  }
+  
+  updatePriceDisplay(currency);
+  document.getElementById("regionOverlay").style.display = "none";
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  const region = localStorage.getItem("selectedRegion");
+  const currency = localStorage.getItem("selectedCurrency") || "USD";
+
+  if (!region) {
+    document.getElementById("regionOverlay").style.display = "flex";
+  } else {
+    updatePriceDisplay(currency);
+  }
+});
+
+document.addEventListener("snipcart.ready", () => {
+  const currency = localStorage.getItem("selectedCurrency") || "USD";
+  Snipcart.api.session.setCurrency(currency.toLowerCase());
+  
+  // Keep your shipping filter
+  const suffix = currency === "AED" ? " - AED" : " - USD";
+  Snipcart.api.shipping.onBeforeShow(methods => {
+    return methods.filter(method => method.name.endsWith(suffix));
   });
+});
 </script>
   
   <script>
