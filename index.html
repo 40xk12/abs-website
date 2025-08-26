@@ -403,10 +403,46 @@ header {
   from { opacity: 0; }
   to { opacity: 1; }
 }
+    @media (max-width: 768px) {
+  .order-summary-toggle {
+    display: block;
+    background-color: #000;
+    color: #fff;
+    padding: 12px;
+    text-align: center;
+    font-weight: bold;
+    cursor: pointer;
+    position: sticky;
+    top: 60px;
+    z-index: 1001;
+  }
+
+  .snipcart-cart__content {
+    display: none;
+  }
+
+  .snipcart-cart__content.expanded {
+    display: block;
+  }
+}
+
+@media (min-width: 769px) {
+  .order-summary-toggle {
+    display: none;
+  }
+
+  .snipcart-cart__content {
+    display: block !important;
+  }
+}
     
   </style>
 </head>
 <body>
+
+  <div class="order-summary-toggle" onclick="toggleOrderSummary()">
+  Show Order Summary
+</div>
   
     <div class="logo-intro">
       <img src="images/logo.webp" alt="ABS Logo" class="logo-animated" />
@@ -741,6 +777,21 @@ header {
   }
 </script>
 
+  <script>
+  function toggleOrderSummary() {
+    const summary = document.querySelector(".snipcart-cart__content");
+    const button = document.querySelector(".order-summary-toggle");
+
+    if (summary.classList.contains("expanded")) {
+      summary.classList.remove("expanded");
+      button.textContent = "Show Order Summary";
+    } else {
+      summary.classList.add("expanded");
+      button.textContent = "Hide Order Summary";
+    }
+  }
+</script>
+  
 </body>
 </html>
 
