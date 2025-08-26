@@ -403,42 +403,10 @@ header {
   from { opacity: 0; }
   to { opacity: 1; }
 }
-   @media (max-width: 768px) {
-  .order-summary-toggle {
-    display: none;
-    background-color: #000;
-    color: #fff;
-    padding: 12px;
-    text-align: center;
-    font-weight: bold;
-    cursor: pointer;
-    position: sticky;
-    top: 60px;
-    z-index: 1001;
-  }
-
-  body.snipcart-checkout .order-summary-toggle {
-    display: block;
-  }
-
-  body.snipcart-checkout .snipcart__box.collapsed {
-    display: none !important;
-  }
-}
-
-@media (min-width: 769px) {
-  .order-summary-toggle {
-    display: none !important;
-  }
-}
     
   </style>
 </head>
 <body>
-
-  <div class="order-summary-toggle" onclick="toggleOrderSummary()">
-  Hide Order Summary
-</div>
   
     <div class="logo-intro">
       <img src="images/logo.webp" alt="ABS Logo" class="logo-animated" />
@@ -771,33 +739,6 @@ header {
     localStorage.removeItem("selectedCurrency");
     location.reload(); // re-triggers the popup
   }
-</script>
-
- <script>
-  function toggleOrderSummary() {
-    const box = document.querySelector(".snipcart__box");
-    const btn = document.querySelector(".order-summary-toggle");
-
-    if (!box) return;
-
-    const isCollapsed = box.classList.toggle("collapsed");
-    btn.textContent = isCollapsed ? "Show Order Summary" : "Hide Order Summary";
-  }
-
-  document.addEventListener("snipcart.ready", () => {
-    const btn = document.querySelector(".order-summary-toggle");
-    if (!btn) return;
-
-    // Reset on step change
-    Snipcart.events.on("checkout.step.changed", () => {
-      const box = document.querySelector(".snipcart__box");
-      const btn = document.querySelector(".order-summary-toggle");
-      if (box && btn) {
-        box.classList.remove("collapsed");
-        btn.textContent = "Hide Order Summary";
-      }
-    });
-  });
 </script>
   
 </body>
